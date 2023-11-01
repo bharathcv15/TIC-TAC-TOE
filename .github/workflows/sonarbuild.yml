@@ -30,9 +30,11 @@ jobs:
 
       - name: Docker Build and Push
         run: |
-          # Add your Docker build and push commands here
-          # For example:
-          # docker build -t your-image-name .
-          # docker push your-registry/your-image-name
+          docker build -t bharathcv/tic-tac-toe .  # Tag your image correctly
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push bharathcv/tic-tac-toe
 
-      # You can add more steps for deployment or additional checks here if needed.
+    env:  # Indentation fixed for the 'env' section
+      DOCKER_CLI_ACI: 1
+
+      # You can add more environment variables if needed
