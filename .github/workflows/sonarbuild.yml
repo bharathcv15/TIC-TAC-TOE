@@ -8,16 +8,19 @@ on:
 jobs:
   build-analyze-scan:
     name: Build, Analyze, and Scan
-    runs-on: self-hosted  # Specify your runner type here, like 'ubuntu-latest' if not self-hosted
+    runs-on: self-hosted
+
+    env:
+      DOCKER_CLI_ACI: 1
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
 
       - name: Build and analyze with SonarQube
-        uses: sonarsource/sonarqube-scan-action@v1  # Updated to the correct version
+        uses: sonarsource/sonarqube-scan-action@v1
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           sonar-host: ${{ secrets.SONAR_HOST_URL }}
@@ -30,11 +33,6 @@ jobs:
 
       - name: Docker Build and Push
         run: |
-          docker build -t bharathcv/tic-tac-toe .  # Tag your image correctly
+          docker build -t bharathcv/tic-tac-toe .
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker push bharathcv/tic-tac-toe
-
-    env:  # Indentation fixed for the 'env' section
-      DOCKER_CLI_ACI: 1
-
-      # You can add more environment variables if needed
