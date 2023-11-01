@@ -1,15 +1,15 @@
-name: Build,Analyze,scan
+name: Build, Analyze, and Scan
 
 on:
   push:
     branches:
       - main
 
-
 jobs:
   build-analyze-scan:
-    name: Build
-    runs-on: [self-hosted]
+    name: Build, Analyze, and Scan
+    runs-on: self-hosted  # Specify your runner type here, like 'ubuntu-latest' if not self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,12 +17,22 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Build and analyze with SonarQube
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: npm install dependency
+        uses: sonarsource/sonarqube-scan-action@v1  # Updated to the correct version
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          sonar-host: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: npm install dependencies
         run: npm install
 
-      - name: Trivy file scan
-        run: trivy fs . > trivyfs.txt 
+      - name: Trivy File Scan
+        run: trivy fs . > trivyfs.txt
+
+      - name: Docker Build and Push
+        run: |
+          # Add your Docker build and push commands here
+          # For example:
+          # docker build -t your-image-name .
+          # docker push your-registry/your-image-name
+
+      # You can add more steps for deployment or additional checks here if needed.
